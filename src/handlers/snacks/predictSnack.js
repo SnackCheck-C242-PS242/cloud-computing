@@ -1,7 +1,7 @@
 const db = require("../../config/firebase");
 
-const addSnack = async (req, res) => {
-  const { snackName, nutrition } = req.body;
+const predictSnack = async (req, res) => {
+  const { snackName, nutrition, category, recommendation } = req.body;
   const username = req.user.username; // Ambil username dari token JWT
 
   try {
@@ -13,6 +13,8 @@ const addSnack = async (req, res) => {
     await snackRef.set({
       snackName,
       nutrition,
+      category,
+      recommendation,
       createdAt: new Date().toISOString(),
     });
 
@@ -29,4 +31,4 @@ const addSnack = async (req, res) => {
   }
 };
 
-module.exports = addSnack;
+module.exports = predictSnack;
