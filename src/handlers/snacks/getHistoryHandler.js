@@ -1,37 +1,36 @@
 const db = require("../../config/firebase");
 
-// Handler untuk mendapatkan data history makanan user
 const getHistory = async (req, res) => {
-  const { username } = req.params;
+  const username = req.user.username; // Ambil username dari token JWT
 
   try {
-    const historyRef = db
+    const snacksRef = db
       .collection("users")
       .doc(username)
       .collection("history");
-    const snapshot = await historyRef.get();
+    const snapshot = await snacksRef.get();
 
     if (snapshot.empty) {
       return res.status(404).json({
         status: "fail",
-        message: "History tidak ditemukan",
+        message: "Tidak ada riwayat snack",
       });
     }
 
-    const historyData = snapshot.docs.map((doc) => ({
-      snackName: doc.id,
-      ...doc.data(),
-    }));
+    const snacks = [];
+    snapshot.forEach((doc) => {
+      snacks.push(doc.data());
+    });
 
-    res.status(200).json({
+    return res.status(200).json({
       status: "success",
-      message: "Berhasil mengambil data history",
-      snacks: historyData,
+      data: snacks,
     });
   } catch (err) {
-    res.status(500).json({
-      status: "fail",
-      message: "Gagal mengambil data history",
+    console.error("Error getting snack history:", err);
+    return res.status(500).json({
+      status: "error",
+      message: "Terjadi kesalahan pada server",
     });
   }
 };

@@ -1,44 +1,30 @@
 const db = require("../../config/firebase");
 
-// Handler untuk menambahkan data makanan ke history user
 const addSnack = async (req, res) => {
-  const { username } = req.params;
-  const {
-    snackName,
-    nutrition: { sugar, fat, salt },
-  } = req.body;
-
-  const snack = {
-    snackName,
-    nutrition: { sugar, fat, salt },
-  };
-
-  const docRef = db
-    .collection("users")
-    .doc(username)
-    .collection("history")
-    .doc(snackName);
+  const { snackName, nutrition } = req.body;
+  const username = req.user.username; // Ambil username dari token JWT
 
   try {
-    const snackDoc = await docRef.get();
-    if (snackDoc.exists) {
-      return res.status(409).json({
-        status: "fail",
-        message:
-          "Snack sudah ada, apakah anda ingin mengganti informasinya dengan informasi yang baru?",
-      });
-    }
+    const snackRef = db
+      .collection("users")
+      .doc(username)
+      .collection("history")
+      .doc(snackName);
+    await snackRef.set({
+      snackName,
+      nutrition,
+      createdAt: new Date().toISOString(),
+    });
 
-    await docRef.set(snack);
-    res.status(200).json({
+    return res.status(201).json({
       status: "success",
-      message: "Berhasil menambahkan data",
-      snacks: snack,
+      message: "Snack berhasil ditambahkan",
     });
   } catch (err) {
-    res.status(500).json({
-      status: "fail",
-      message: "Gagal menambahkan data",
+    console.error("Error adding snack:", err);
+    return res.status(500).json({
+      status: "error",
+      message: "Terjadi kesalahan pada server",
     });
   }
 };

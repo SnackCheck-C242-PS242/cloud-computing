@@ -35,7 +35,8 @@ const forgotPassword = async (req, res) => {
     });
   }
 
-  const resetCode = crypto.randomBytes(3).toString("hex").toUpperCase();
+  // Buat kode verifikasi berupa angka (5 digit)
+  const resetCode = crypto.randomInt(10000, 100000).toString();
   const resetRef = db.collection("passwordResets").doc(email);
 
   await resetRef.set({
@@ -51,7 +52,7 @@ const forgotPassword = async (req, res) => {
     },
     to: email,
     subject: "Password Reset Code",
-    text: `Kode reset password untuk akun anda adalah: ${resetCode}`,
+    text: `Kode verifikasi untuk reset password anda adalah: ${resetCode}`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -59,13 +60,12 @@ const forgotPassword = async (req, res) => {
       console.error("Error sending email:", error);
       return res.status(500).json({
         status: "error",
-        message: "Gagal mengirim email",
-        error: error.message, // Tambahkan pesan kesalahan untuk debugging
+        message: "Gagal mengirim email verifikasi",
       });
     } else {
       return res.status(200).json({
         status: "success",
-        message: "Kode reset password telah dikirim ke email",
+        message: "Kode verifikasi untuk reset password telah dikirim ke email",
       });
     }
   });
