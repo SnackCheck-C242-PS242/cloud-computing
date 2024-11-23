@@ -31,6 +31,7 @@ const authenticateToken = async (req, res, next) => {
     }
 
     req.user = user;
+    console.log("Isi dari req.user:", req.user);
     next();
   });
 };

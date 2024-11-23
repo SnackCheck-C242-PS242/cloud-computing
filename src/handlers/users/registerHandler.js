@@ -15,10 +15,15 @@ const transporter = nodemailer.createTransport({
 });
 
 const registerUser = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, confirmPassword } = req.body;
 
   // Validasi input menggunakan Joi
-  const { error } = registerSchema.validate({ username, email, password });
+  const { error } = registerSchema.validate({
+    username,
+    email,
+    password,
+    confirmPassword,
+  });
   if (error) {
     return res.status(400).json({
       status: "fail",
@@ -52,11 +57,8 @@ const registerUser = async (req, res) => {
     const saltRounds = parseInt(process.env.SALT_ROUNDS) || 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Buat kode verifikasi
-    const verificationCode = crypto
-      .randomBytes(3)
-      .toString("hex")
-      .toUpperCase();
+    // Buat kode verifikasi berupa angka (6 digit)
+    const verificationCode = crypto.randomInt(10000, 100000).toString();
 
     // Simpan kode verifikasi ke koleksi terpisah
     const verificationRef = db.collection("emailVerifications").doc(email);
@@ -85,7 +87,6 @@ const registerUser = async (req, res) => {
         return res.status(500).json({
           status: "error",
           message: "Gagal mengirim email verifikasi",
-          error: error.message, // Pesan kesalahan untuk debugging
         });
       } else {
         return res.status(201).json({

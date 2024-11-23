@@ -20,6 +20,10 @@ const registerSchema = Joi.object({
     "string.min": `"password" minimal memiliki 3 karakter`,
     "any.required": `"password" harus diisi`,
   }),
+  confirmPassword: Joi.string().valid(Joi.ref("password")).required().messages({
+    "any.only": `"confirmPassword" harus sama dengan "password"`,
+    "any.required": `"confirmPassword" harus diisi`,
+  }),
 });
 
 // Schema validasi menggunakan Joi untuk login
