@@ -13,7 +13,7 @@ const getHistory = async (req, res) => {
     if (snapshot.empty) {
       return res.status(404).json({
         status: "fail",
-        message: "Tidak ada riwayat snack",
+        message: "No snack history",
       });
     }
 
@@ -30,7 +30,7 @@ const getHistory = async (req, res) => {
     console.error("Error getting snack history:", err);
     return res.status(500).json({
       status: "error",
-      message: "Terjadi kesalahan pada server",
+      message: "Internal server error",
     });
   }
 };

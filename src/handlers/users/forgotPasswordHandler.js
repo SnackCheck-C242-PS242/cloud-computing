@@ -31,7 +31,7 @@ const forgotPassword = async (req, res) => {
   if (snapshot.empty) {
     return res.status(404).json({
       status: "fail",
-      message: "Email belum terdaftar",
+      message: "Email not registered",
     });
   }
 
@@ -52,7 +52,7 @@ const forgotPassword = async (req, res) => {
     },
     to: email,
     subject: "Password Reset Code",
-    text: `Kode verifikasi untuk reset password anda adalah: ${resetCode}`,
+    text: `The verification code to reset your password is: ${resetCode}`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -60,12 +60,13 @@ const forgotPassword = async (req, res) => {
       console.error("Error sending email:", error);
       return res.status(500).json({
         status: "error",
-        message: "Gagal mengirim email verifikasi",
+        message: "Failed to send verification code",
       });
     } else {
       return res.status(200).json({
         status: "success",
-        message: "Kode verifikasi untuk reset password telah dikirim ke email",
+        message:
+          "The verification code for password reset has been sent to email",
       });
     }
   });

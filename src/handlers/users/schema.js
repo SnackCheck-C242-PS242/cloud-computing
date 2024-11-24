@@ -3,73 +3,79 @@ const Joi = require("joi");
 // Schema validasi menggunakan Joi untuk registrasi
 const registerSchema = Joi.object({
   username: Joi.string().alphanum().min(3).max(30).required().messages({
-    "string.alphanum": `"username" hanya boleh terdiri dari huruf dan angka`,
-    "string.base": `"username" harus berupa string`,
-    "string.min": `"username" minimal memiliki 3 karakter`,
-    "string.max": `"username" maksimal memiliki 30 karakter`,
-    "any.required": `"username" harus diisi`,
+    "string.alphanum": `"username" must only contain letters and numbers`,
+    "string.base": `"username" must be a string`,
+    "string.min": `"username" must have at least 3 characters`,
+    "string.max": `"username" must have at most 30 characters`,
+    "any.required": `"username" is required`,
   }),
   email: Joi.string().email().required().messages({
-    "string.base": `"email" harus berupa string`,
-    "string.email": `"email" tidak valid`,
-    "any.required": `"email" harus diisi`,
+    "string.base": `"email" must be a string`,
+    "string.email": `"email" is not valid`,
+    "any.required": `"email" is required`,
   }),
-  password: Joi.string().alphanum().min(3).required().messages({
-    "string.alphanum": `"password" hanya boleh terdiri dari huruf dan angka`,
-    "string.base": `"password" harus berupa string`,
-    "string.min": `"password" minimal memiliki 3 karakter`,
-    "any.required": `"password" harus diisi`,
+  password: Joi.string().alphanum().min(6).required().messages({
+    "string.alphanum": `"password" must only contain letters and numbers`,
+    "string.base": `"password" must be a string`,
+    "string.min": `"password" must have at least 6 characters`,
+    "any.required": `"password" is required`,
   }),
   confirmPassword: Joi.string().valid(Joi.ref("password")).required().messages({
-    "any.only": `"confirmPassword" harus sama dengan "password"`,
-    "any.required": `"confirmPassword" harus diisi`,
+    "any.only": `"confirmPassword" must match "password"`,
+    "any.required": `"confirmPassword" is required`,
   }),
 });
 
 // Schema validasi menggunakan Joi untuk login
 const loginSchema = Joi.object({
   username: Joi.string().alphanum().min(3).max(30).required().messages({
-    "string.alphanum": `"username" hanya boleh terdiri dari huruf dan angka`,
-    "string.base": `"username" harus berupa string`,
-    "string.min": `"username" minimal memiliki 3 karakter`,
-    "string.max": `"username" maksimal memiliki 30 karakter`,
-    "any.required": `"username" harus diisi`,
+    "string.alphanum": `"username" must only contain letters and numbers`,
+    "string.base": `"username" must be a string`,
+    "string.min": `"username" must have at least 3 characters`,
+    "string.max": `"username" must have at most 30 characters`,
+    "any.required": `"username" is required`,
   }),
-  password: Joi.string().alphanum().min(3).required().messages({
-    "string.alphanum": `"password" hanya boleh terdiri dari huruf dan angka`,
-    "string.base": `"password" harus berupa string`,
-    "string.min": `"password" minimal memiliki 3 karakter`,
-    "any.required": `"password" harus diisi`,
+  password: Joi.string().alphanum().min(6).required().messages({
+    "string.alphanum": `"password" must only contain letters and numbers`,
+    "string.base": `"password" must be a string`,
+    "string.min": `"password" must have at least 6 characters`,
+    "any.required": `"password" is required`,
   }),
 });
 
 // Schema validasi menggunakan Joi untuk lupa password
 const forgotPasswordSchema = Joi.object({
   email: Joi.string().email().required().messages({
-    "string.base": `"email" harus berupa string`,
-    "string.email": `"email" tidak valid`,
-    "any.required": `"email" harus diisi`,
+    "string.base": `"email" must be a string`,
+    "string.email": `"email" is not valid`,
+    "any.required": `"email" is required`,
   }),
 });
 
 // Schema validasi menggunakan Joi untuk reset password
 const resetPasswordSchema = Joi.object({
   email: Joi.string().email().required().messages({
-    "string.base": `"email" harus berupa string`,
-    "string.email": `"email" tidak valid`,
-    "any.required": `"email" harus diisi`,
+    "string.base": `"email" must be a string`,
+    "string.email": `"email" is not valid`,
+    "any.required": `"email" is required`,
   }),
-  resetCode: Joi.string().length(6).required().messages({
-    "string.base": `"resetCode" harus berupa string`,
-    "string.length": `"resetCode" harus memiliki 6 karakter`,
-    "any.required": `"resetCode" harus diisi`,
+  resetCode: Joi.string().required().messages({
+    "string.base": `"resetCode" must be a string`,
+    "any.required": `"resetCode" is required`,
   }),
-  newPassword: Joi.string().alphanum().min(3).required().messages({
-    "string.alphanum": `"newPassword" hanya boleh terdiri dari huruf dan angka`,
-    "string.base": `"newPassword" harus berupa string`,
-    "string.min": `"newPassword" minimal memiliki 3 karakter`,
-    "any.required": `"newPassword" harus diisi`,
+  newPassword: Joi.string().alphanum().min(6).required().messages({
+    "string.alphanum": `"newPassword" must only contain letters and numbers`,
+    "string.base": `"newPassword" must be a string`,
+    "string.min": `"newPassword" must have at least 6 characters`,
+    "any.required": `"newPassword" is required`,
   }),
+  confirmPassword: Joi.string()
+    .valid(Joi.ref("newPassword"))
+    .required()
+    .messages({
+      "any.only": `"confirmPassword" must match "newPassword"`,
+      "any.required": `"confirmPassword" is required`,
+    }),
 });
 
 module.exports = {

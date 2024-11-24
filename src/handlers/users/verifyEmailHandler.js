@@ -14,7 +14,7 @@ const verifyEmail = async (req, res) => {
     if (snapshot.empty) {
       return res.status(404).json({
         status: "fail",
-        message: "Kode verifikasi tidak valid atau user tidak ditemukan",
+        message: "Invalid verification code or user not found",
       });
     }
 
@@ -29,7 +29,7 @@ const verifyEmail = async (req, res) => {
       await verificationDoc.ref.delete();
       return res.status(409).json({
         status: "fail",
-        message: "Username telah digunakan",
+        message: "Username already in use",
       });
     }
 
@@ -39,6 +39,7 @@ const verifyEmail = async (req, res) => {
       email: verificationData.email,
       password: verificationData.password,
       isVerified: true,
+      createdAt: new Date().toISOString(),
     });
 
     // Hapus kode verifikasi setelah digunakan
@@ -46,13 +47,13 @@ const verifyEmail = async (req, res) => {
 
     return res.status(200).json({
       status: "success",
-      message: "Email berhasil diverifikasi",
+      message: "Email successfully verified",
     });
   } catch (err) {
     console.error("Error verifying email:", err);
     return res.status(500).json({
       status: "error",
-      message: "Terjadi kesalahan pada server",
+      message: "Internal server error",
     });
   }
 };
