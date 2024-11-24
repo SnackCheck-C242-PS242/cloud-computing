@@ -56,7 +56,7 @@ const loginUser = async (req, res) => {
 
     return res.status(200).json({
       status: "success",
-      message: "Login berhasil",
+      message: "Login successsful",
       accessToken,
       refreshToken,
     });
@@ -64,7 +64,7 @@ const loginUser = async (req, res) => {
     console.error("Error logging in user:", err);
     return res.status(500).json({
       status: "error",
-      message: "Terjadi kesalahan pada server",
+      message: "Internal server error",
     });
   }
 };

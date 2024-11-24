@@ -49,7 +49,7 @@ const registerUser = async (req, res) => {
     if (!emailSnapshot.empty) {
       return res.status(409).json({
         status: "fail",
-        message: "Email sudah digunakan",
+        message: "Email already in use",
       });
     }
 
@@ -78,7 +78,7 @@ const registerUser = async (req, res) => {
       },
       to: email,
       subject: "Email Verification Code",
-      text: `Kode verifikasi untuk akun anda adalah: ${verificationCode}`,
+      text: `The verification code for your account is: ${verificationCode}`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -86,12 +86,12 @@ const registerUser = async (req, res) => {
         console.error("Error sending email:", error);
         return res.status(500).json({
           status: "error",
-          message: "Gagal mengirim email verifikasi",
+          message: "Failed to send verification code",
         });
       } else {
         return res.status(201).json({
           status: "success",
-          message: "Kode verifikasi telah dikirim ke email",
+          message: "Verification code has been sent to email",
         });
       }
     });
@@ -99,7 +99,7 @@ const registerUser = async (req, res) => {
     console.error("Error registering user:", err);
     return res.status(500).json({
       status: "error",
-      message: "Terjadi kesalahan pada server",
+      message: "Internal server error",
     });
   }
 };

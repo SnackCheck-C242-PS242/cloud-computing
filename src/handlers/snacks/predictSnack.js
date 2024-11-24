@@ -1,7 +1,7 @@
 const db = require("../../config/firebase");
 
 const predictSnack = async (req, res) => {
-  const { snackName, nutrition, category, recommendation } = req.body;
+  const { snackName, nutrition } = req.body;
   const username = req.user.username; // Ambil username dari token JWT
 
   try {
@@ -13,20 +13,22 @@ const predictSnack = async (req, res) => {
     await snackRef.set({
       snackName,
       nutrition,
-      category,
-      recommendation,
       createdAt: new Date().toISOString(),
     });
 
     return res.status(201).json({
       status: "success",
-      message: "Snack berhasil ditambahkan",
+      message: "Snack successfully predicted",
+      result: {
+        snackName,
+        nutrition,
+      },
     });
   } catch (err) {
     console.error("Error adding snack:", err);
     return res.status(500).json({
       status: "error",
-      message: "Terjadi kesalahan pada server",
+      message: "Internal server error",
     });
   }
 };

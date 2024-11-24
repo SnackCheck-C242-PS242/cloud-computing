@@ -17,7 +17,7 @@ const getSnackByName = async (req, res) => {
     if (!snackDoc.exists) {
       return res.status(404).json({
         status: "fail",
-        message: `Snack dengan nama ${snackName} tidak ditemukan`,
+        message: `Snack with name ${snackName} was not found`,
       });
     }
 
@@ -29,7 +29,7 @@ const getSnackByName = async (req, res) => {
     console.error("Error getting snack by name:", err);
     return res.status(500).json({
       status: "error",
-      message: "Terjadi kesalahan pada server",
+      message: "Internal server error",
     });
   }
 };
