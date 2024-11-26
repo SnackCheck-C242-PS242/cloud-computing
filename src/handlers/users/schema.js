@@ -9,6 +9,12 @@ const registerSchema = Joi.object({
     "string.max": `"username" must have at most 30 characters`,
     "any.required": `"username" is required`,
   }),
+  fullName: Joi.string().min(3).max(50).required().messages({
+    "string.base": `"fullName" must be a string`,
+    "string.min": `"fullName" must have at least 3 characters`,
+    "string.max": `"fullName" must have at most 50 characters`,
+    "any.required": `"fullName" is required`,
+  }),
   email: Joi.string().email().required().messages({
     "string.base": `"email" must be a string`,
     "string.email": `"email" is not valid`,

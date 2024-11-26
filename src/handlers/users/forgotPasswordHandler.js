@@ -1,10 +1,7 @@
-require("dotenv").config();
 const db = require("../../config/firebase");
-const { forgotPasswordSchema } = require("./schema");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 
-// Konfigurasi nodemailer
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -16,60 +13,66 @@ const transporter = nodemailer.createTransport({
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
-  // Validasi input menggunakan Joi
-  const { error } = forgotPasswordSchema.validate({ email });
-  if (error) {
-    return res.status(400).json({
-      status: "fail",
-      message: error.details[0].message,
-    });
-  }
+  try {
+    // Ambil user berdasarkan email
+    const userSnapshot = await db
+      .collection("users")
+      .where("email", "==", email)
+      .get();
 
-  const userRef = db.collection("users").where("email", "==", email);
-  const snapshot = await userRef.get();
-
-  if (snapshot.empty) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Email not registered",
-    });
-  }
-
-  // Buat kode verifikasi berupa angka (5 digit)
-  const resetCode = crypto.randomInt(10000, 100000).toString();
-  const resetRef = db.collection("passwordResets").doc(email);
-
-  await resetRef.set({
-    email,
-    resetCode,
-    createdAt: new Date(),
-  });
-
-  const mailOptions = {
-    from: {
-      name: "snackCheck",
-      address: process.env.EMAIL,
-    },
-    to: email,
-    subject: "Password Reset Code",
-    text: `The verification code to reset your password is: ${resetCode}`,
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error("Error sending email:", error);
-      return res.status(500).json({
-        status: "error",
-        message: "Failed to send verification code",
-      });
-    } else {
-      return res.status(200).json({
-        status: "success",
-        message:
-          "The verification code for password reset has been sent to email",
+    if (userSnapshot.empty) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Email not found",
       });
     }
-  });
+
+    const userDoc = userSnapshot.docs[0];
+    const userData = userDoc.data();
+    const fullName = userData.fullName; // Ambil fullName dari data user
+
+    // Generate reset code
+    const resetCode = crypto.randomInt(10000, 100000).toString();
+
+    // Simpan reset code di database
+    await db.collection("passwordResets").doc(email).set({
+      resetCode,
+      createdAt: new Date(),
+    });
+
+    // Konfigurasi email
+    const mailOptions = {
+      from: {
+        name: "snackCheck",
+        address: process.env.EMAIL,
+      },
+      to: email,
+      subject: "Password Reset Code",
+      text: `Hello ${fullName}, \n\nThe verification code to reset your password is: ${resetCode}`,
+    };
+
+    // Kirim email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+        return res.status(500).json({
+          status: "error",
+          message: "Error sending email",
+        });
+      }
+
+      res.status(200).json({
+        status: "success",
+        message: "Password reset code sent successfully",
+      });
+    });
+  } catch (error) {
+    console.error("Error processing forgot password request:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal server error",
+    });
+  }
 };
 
 module.exports = forgotPassword;

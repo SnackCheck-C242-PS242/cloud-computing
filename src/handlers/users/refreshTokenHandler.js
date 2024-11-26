@@ -27,7 +27,7 @@ const refreshToken = async (req, res) => {
     const accessToken = jwt.sign(
       { username: decoded.username, email: decoded.email },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "3d" } // Masa berlaku access token 3 hari
     );
 
     return res.status(200).json({

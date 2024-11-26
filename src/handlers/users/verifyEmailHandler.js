@@ -36,6 +36,7 @@ const verifyEmail = async (req, res) => {
     // Simpan user baru ke database
     await userRef.set({
       username: verificationData.username,
+      fullName: verificationData.fullName,
       email: verificationData.email,
       password: verificationData.password,
       isVerified: true,

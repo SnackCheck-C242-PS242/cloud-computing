@@ -10,10 +10,10 @@ const verifyEmail = require("../handlers/users/verifyEmailHandler");
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.post("/refresh-token", refreshToken);
+router.post("/refreshToken", refreshToken);
 router.post("/logout", logoutUser);
-router.post("/forgot-password", forgotPassword);
-router.post("/reset-password", resetPassword);
-router.post("/verify-email", verifyEmail);
+router.post("/password", forgotPassword);
+router.put("/password", resetPassword);
+router.post("/verifyEmail", verifyEmail);
 
 module.exports = router;

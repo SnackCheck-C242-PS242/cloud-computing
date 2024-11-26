@@ -24,7 +24,7 @@ const loginUser = async (req, res) => {
     if (!userDoc.exists) {
       return res.status(404).json({
         status: "fail",
-        message: "User tidak ditemukan",
+        message: "User not found",
       });
     }
 
@@ -34,7 +34,7 @@ const loginUser = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({
         status: "fail",
-        message: "Password salah",
+        message: "Wrong password",
       });
     }
 
@@ -42,7 +42,7 @@ const loginUser = async (req, res) => {
     const accessToken = jwt.sign(
       { username: userData.username, email: userData.email },
       process.env.JWT_SECRET,
-      { expiresIn: "1m" } // Masa berlaku access token 10 menit
+      { expiresIn: "15m" } // Masa berlaku access token 15 menit
     );
 
     const refreshToken = jwt.sign(

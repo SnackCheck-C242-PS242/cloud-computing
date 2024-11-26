@@ -15,11 +15,12 @@ const transporter = nodemailer.createTransport({
 });
 
 const registerUser = async (req, res) => {
-  const { username, email, password, confirmPassword } = req.body;
+  const { username, fullName, email, password, confirmPassword } = req.body;
 
   // Validasi input menggunakan Joi
   const { error } = registerSchema.validate({
     username,
+    fullName,
     email,
     password,
     confirmPassword,
@@ -64,6 +65,7 @@ const registerUser = async (req, res) => {
     const verificationRef = db.collection("emailVerifications").doc(email);
     await verificationRef.set({
       username,
+      fullName,
       email,
       password: hashedPassword,
       verificationCode,
@@ -78,7 +80,7 @@ const registerUser = async (req, res) => {
       },
       to: email,
       subject: "Email Verification Code",
-      text: `The verification code for your account is: ${verificationCode}`,
+      text: `Hello ${fullName}, \n\nThe verification code for your account is: ${verificationCode}`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
