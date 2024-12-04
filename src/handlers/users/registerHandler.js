@@ -41,7 +41,7 @@ const registerUser = async (req, res) => {
     if (userDoc.exists) {
       return res.status(409).json({
         status: "fail",
-        message: "Username sudah digunakan",
+        message: "Username already in use",
       });
     }
 

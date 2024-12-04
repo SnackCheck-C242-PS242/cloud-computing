@@ -1,15 +1,15 @@
 const db = require("../../config/firebase");
 
 // Handler untuk mendapatkan data makanan berdasarkan nama snack
-const getSnackByName = async (req, res) => {
-  const { snackName } = req.params;
+const getSnackById = async (req, res) => {
+  const { snackId } = req.params;
   const username = req.user.username; // Ambil username dari token JWT
 
   const snackRef = db
     .collection("users")
     .doc(username)
     .collection("history")
-    .doc(snackName);
+    .doc(snackId);
 
   try {
     const snackDoc = await snackRef.get();
@@ -17,7 +17,7 @@ const getSnackByName = async (req, res) => {
     if (!snackDoc.exists) {
       return res.status(404).json({
         status: "fail",
-        message: `Snack with name ${snackName} was not found`,
+        message: `Snack with Id: ${snackId} was not found`,
       });
     }
 
@@ -26,7 +26,7 @@ const getSnackByName = async (req, res) => {
       data: snackDoc.data(),
     });
   } catch (err) {
-    console.error("Error getting snack by name:", err);
+    console.error("Error getting snack by Id:", err);
     return res.status(500).json({
       status: "error",
       message: "Internal server error",
@@ -34,4 +34,4 @@ const getSnackByName = async (req, res) => {
   }
 };
 
-module.exports = getSnackByName;
+module.exports = getSnackById;

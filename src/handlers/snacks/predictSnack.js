@@ -1,9 +1,18 @@
 const db = require("../../config/firebase");
 const axios = require("axios");
+const crypto = require("crypto");
+
+
 
 const predictSnack = async (req, res) => {
   const { snackName, nutritions } = req.body;
   const username = req.user.username; // Ambil username dari token JWT
+  
+  const generateId = (length = 16) => {
+    return crypto.randomBytes(length).toString("hex").slice(0, length);
+  };
+
+  const snackId = generateId()
 
   try {
     // Panggil API machine learning untuk mendapatkan kategori dan rekomendasi
@@ -21,8 +30,9 @@ const predictSnack = async (req, res) => {
       .collection("users")
       .doc(username)
       .collection("history")
-      .doc(snackName);
+      .doc(snackId);
     await snackRef.set({
+      snackId,
       snackName,
       nutritions,
       health_status,
@@ -34,6 +44,7 @@ const predictSnack = async (req, res) => {
       status: "success",
       message: "Snack successfully predicted",
       result: {
+        snackId,
         snackName,
         nutritions,
         health_status,

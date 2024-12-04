@@ -2,8 +2,8 @@ node_modules
 
 .env
 
+app.yaml
+
 package-lock.json
 
 serviceAccountKey.json
-
-app.yaml

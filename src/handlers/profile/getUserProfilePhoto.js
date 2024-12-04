@@ -4,6 +4,8 @@ const getUserProfileInfo = async (req, res) => {
   try {
     const username = req.user.username; // Ambil username dari token JWT
     const fullName = req.user.fullName;
+    const email = req.user.email;
+
     const userDoc = await db.collection("users").doc(username).get();
 
     if (!userDoc.exists) {
@@ -16,9 +18,11 @@ const getUserProfileInfo = async (req, res) => {
     const userData = userDoc.data();
     res.status(200).json({
       status: "success",
-      fullName,
-      profilePhotoUrl: userData.profilePhotoUrl,
-    });
+      data: { fullName, 
+        username,
+        email,
+        profilePhotoUrl: userData.profilePhotoUrl }
+});
   } catch (err) {
     res.status(500).json({ status: "error", message: err.message });
   }

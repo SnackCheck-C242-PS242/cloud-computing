@@ -5,19 +5,19 @@ const updateSnack = async (req, res) => {
   const { username } = req.params;
   const {
     snackName,
-    nutrition: { sugar, fat, salt },
+    nutrition,
   } = req.body;
 
   const snack = {
     snackName,
-    nutrition: { sugar, fat, salt },
+    nutrition,
   };
 
   const docRef = db
     .collection("users")
     .doc(username)
     .collection("history")
-    .doc(snackName);
+    .doc(snackId);
 
   try {
     await docRef.update(snack);
