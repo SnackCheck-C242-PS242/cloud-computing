@@ -42,7 +42,7 @@ const loginUser = async (req, res) => {
     const accessToken = jwt.sign(
       { username: userData.username, email: userData.email },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" } // Masa berlaku access token 15 menit
+      { expiresIn: "7d" } // Masa berlaku access token 15 menit
     );
 
     const refreshToken = jwt.sign(
@@ -51,7 +51,7 @@ const loginUser = async (req, res) => {
       { expiresIn: "7d" } // Masa berlaku refresh token 7 hari
     );
 
-    // Simpan refresh token di database atau tempat penyimpanan yang aman
+    // Simpan refresh token di database
     await docRef.update({ refreshToken });
 
     return res.status(200).json({

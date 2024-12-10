@@ -59,16 +59,7 @@ const forgotPasswordSchema = Joi.object({
 });
 
 // Schema validasi menggunakan Joi untuk reset password
-const resetPasswordSchema = Joi.object({
-  email: Joi.string().email().required().messages({
-    "string.base": `"email" must be a string`,
-    "string.email": `"email" is not valid`,
-    "any.required": `"email" is required`,
-  }),
-  resetCode: Joi.string().required().messages({
-    "string.base": `"resetCode" must be a string`,
-    "any.required": `"resetCode" is required`,
-  }),
+const setPasswordSchema = Joi.object({
   newPassword: Joi.string().alphanum().min(6).required().messages({
     "string.alphanum": `"newPassword" must only contain letters and numbers`,
     "string.base": `"newPassword" must be a string`,
@@ -88,5 +79,5 @@ module.exports = {
   registerSchema,
   loginSchema,
   forgotPasswordSchema,
-  resetPasswordSchema,
+  setPasswordSchema,
 };

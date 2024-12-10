@@ -1,34 +1,36 @@
 const db = require("../../config/firebase");
 
-const getHistory = async (req, res) => {
+const clearHistory = async (req, res) => {
   const username = req.user.username; // Ambil username dari token JWT
 
   try {
     const snacksRef = db
       .collection("users")
       .doc(username)
-      .collection("history")
-      .orderBy("createdAt", "desc");
+      .collection("history");
+
     const snapshot = await snacksRef.get();
 
     if (snapshot.empty) {
-      return res.status(200).json({
-        status: "success",
-        message: "No snack history",
+      return res.status(404).json({
+        status: "fail",
+        message: "No snack history to clear",
       });
     }
 
-    const snacks = [];
+    const batch = db.batch();
     snapshot.forEach((doc) => {
-      snacks.push(doc.data());
+      batch.delete(doc.ref);
     });
+
+    await batch.commit();
 
     return res.status(200).json({
       status: "success",
-      data: snacks,
+      message: "Snack history cleared",
     });
   } catch (err) {
-    console.error("Error getting snack history:", err);
+    console.error("Error clearing snack history:", err);
     return res.status(500).json({
       status: "error",
       message: "Internal server error",
@@ -36,4 +38,4 @@ const getHistory = async (req, res) => {
   }
 };
 
-module.exports = getHistory;
+module.exports = clearHistory;

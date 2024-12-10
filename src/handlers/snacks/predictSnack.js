@@ -25,7 +25,7 @@ const predictSnack = async (req, res) => {
     );
     console.log("Response from ML API:", response.data);
 
-    const { health_status, recommendation } = response.data;
+    const { health_status, recommendation, categories } = response.data;
     const snackRef = db
       .collection("users")
       .doc(username)
@@ -37,6 +37,7 @@ const predictSnack = async (req, res) => {
       nutritions,
       health_status,
       recommendation,
+      categories,
       createdAt: new Date().toISOString(),
     });
 
@@ -49,6 +50,7 @@ const predictSnack = async (req, res) => {
         nutritions,
         health_status,
         recommendation,
+        categories
       },
     });
   } catch (err) {
